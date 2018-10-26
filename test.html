@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="" />
+    <script src="/node_modules/eosjs/lib/eos.js"></script>
+    <script src="/node_modules/eosjs-api/lib/eos-api.js"></script>
+    <title>test</title>
+</head>
+<body>
+<script>
+    var config = {
+        httpEndpoint: 'http://jungle.cryptolions.io:18888', //DEV开发链url与端口
+        chainId: '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca', // 通过cleos get info可以获取chainId
+        keyProvider:'5Jw4EY5DYLjM3uEMywopNhRpY2haVTqg5LvoVBSNBEhXgdV34Hm',//配置私钥字符串
+        verbose: true,
+
+        mockTransactions: () => null, // 如果要广播，需要设为null
+        // transactionHeaders: (expireInSeconds, callback) => {
+        //     callback(null/*error*/, headers) //手动设置交易记录头，该方法中的callback回调函数每次交易都会被调用
+        // },
+        expireInSeconds: 60,
+        broadcast: true,
+        debug: false,
+        sign: true,
+
+        //authorization: null // 该参数用于在多签名情况下，识别签名帐号与权限,格式如：account@permission
+    };
+    var eos = Eos(config);
+    var auth = {"threshold": 1,"keys": [{"key": "EOS5HYY3kX1wEaMseSmQyjf1YY5XJFComU5UgyxsT9S8HndK8TNYk","weight": 1}],"accounts": [{"permission":{"actor":"owner1111114","permission":"eosio.code"},"weight":1}]};
+    var op_data = {
+            account: 'chen12312312',
+            permission: 'active',
+            parent: 'owner',
+            auth: auth
+    };
+    eos.updateauth(op_data).then(res =>{
+        console.log(res)
+    }).catch(err =>{
+        console.error(err)
+    });
+</script>
+</body>
+</html>

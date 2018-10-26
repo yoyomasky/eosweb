@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="" />
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="/node_modules/eosjs/lib/eos.js"></script>
+    <script src="/node_modules/eosjs-api/lib/eos-api.js"></script>
+    <script src="/layer/layer.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/function.js"></script>
+    <script src="/js/eostest.js"></script>
+    <script src="/js/msg.js"></script>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style/index.css">
+    <title>eostest</title>
+</head>
+<body>
+    <div class="main container-fluid">
+        <div class="boxlogin">
+            <div class="LoginAcc ">
+                <h1 class="logo">EOS ADE_Admin</h1>
+                <h3>登入账户</h3>
+                <form class="form-inline">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                    <input type="text" class="form-control" id="exampleInputEmail3" placeholder="Account">
+                </div>
+                <button type="button" onclick="getAccInfo($('#exampleInputEmail3').val())" class="btn btn-default">Sign in</button><br />
+                <div class="checkbox">
+                    <label>
+                    <input type="checkbox"> Remember me
+                    </label>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="boxMan container-fluid hide">
+            <!-- topmenu -->
+            <nav class="navbar navbar-default navbar-fixed-top navbar-right">
+                <div class="container-fluid">
+                    <div class="admin_logo fl">Admin-Dashboard</div>
+                    <ul class="nav nav-pills fr m-h50">
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li role="presentation"><a href="#">Help</a></li>
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="row">
+                <!--action-->
+                <div class="col-xs-6">
+                    <h3>相关操作---><span id="actionTypeName">转账</span></h3>
+                    <div id="actionType_transfer" class="actionType">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="acc_t_name">接收账号:</label>
+                                    <input type="text" class="form-control" id="acc_t_name" placeholder="account id">
+                                </div>
+                            </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row">
+                            <div class="col-lg-12 form-group">
+                                <div class="input-group">
+                                    <label for="acc_t_num">转账数量:</label>
+                                    <input type="text" class="form-control" aria-label="acc_t_num" id="acc_t_num" placeholder="0">
+                                    <div class="input-group-btn" style="padding-top:25px">
+                                        <button type="button" class="btn btn-default dropdown-toggle" id="t_type" t-type="EOS" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="tokenName">EOS</span><span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" onclick="changeToken('EOS')" >EOS</a></li>
+                                            <li><a href="#" onclick="changeToken('A')">A</a></li>
+                                        </ul>
+                                    </div><!-- /btn-group -->
+                                </div><!-- /input-group -->
+                            </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button type="button" id="sub_acc_transfer" class="btn btn-default">提交</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--accinfo-->
+                <div class="accInfo col-xs-5">
+                    <h3 >账户信息<a class="RefreshInfo" href="javascript:getAccInfo(user_acc);">刷新</a></h3>
+                    <ul>
+                        <li><h4>AccName:</h4><span id="acc_account_name">---</span></li>
+                        <li><h4>created:</h4><span id="acc_created">---</span></li>
+                        <li><h4>core_liquid_balance:</h4><span id="acc_core_liquid_balance">---</span></li>
+                        <li><h4>A:</h4><span id="acc_ade" >---</span></li>
+                        <li><h4>permissions:</h4></li>
+
+                        <li id="acc_permissions">
+
+                        </li>
+
+                        <li><h4>CPU:</h4></li>
+                        <li>
+                            <ul class="kuai_1">
+                                <!-- cpu -->
+                                <li><strong>available:</strong><span id="acc_cpu_available">---</span></li>
+                                <li><strong>max:</strong><span id="acc_cpu_max">---</span></li>
+                                <li><strong>used:</strong><span id="acc_cpu_used">---</span></li>
+                                <li><strong>cpu_weight:</strong><span id="acc_cpu_weight">---</span></li>
+
+                            </ul>
+                        </li>
+                        <li><h4>Net:</h4></li>
+                        <li>
+                            <ul class="kuai_1">
+                                <!-- net -->
+                                <li><strong>available:</strong><span id="acc_net_available" >---</span></li>
+                                <li><strong>max:</strong><span id="acc_net_max" >---</span></li>
+                                <li><strong>used:</strong><span id="acc_net_used" >---</span></li>
+                                <li><strong>cpu_weight:</strong><span id="acc_net_weight" >---</span></li>
+
+                            </ul>
+                        </li>
+                        <li><h4>Ram:</h4></li>
+                        <li>
+                            <ul class="kuai_1">
+                                <!-- Ram -->
+                                <li><strong>ram_quota:</strong><span id="acc_ram_quota" >---</span></li>
+                                <li><strong>ram_usage:</strong><span id="acc_ram_usage"  >---</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="container-fluid footer_pop px hide">
+        <div class="bottom-hint-content">
+            <div class="left">
+                <div class="transaction_send_title">  您的交易已发送，交易码如下： </div>
+                <p> 0x0b9f30782c1ecbfc52fc483d2f350e3a713d87fb8343c9e679fa70a70775cf70</p>
+            </div>
+            <a class="bottom-hint-btn transaction_send_show_btn" href="https://ropsten.etherscan.io/tx/0x0b9f30782c1ecbfc52fc483d2f350e3a713d87fb8343c9e679fa70a70775cf70" target="_blank">查看交易状态</a>
+            <a href="javascript:;" class="pa bottom-hint-addr"></a>
+        </div>
+    </div>
+
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
